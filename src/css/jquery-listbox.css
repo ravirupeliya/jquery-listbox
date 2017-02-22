@@ -1,0 +1,109 @@
+/*
+* jquery-listbox - v0.0.1
+* Copyright 2017, Ravi Rupeliya
+* Email : ravirupeliya@gmail.com
+* Free to use under the MIT license.
+*/
+
+.CheckListView {
+    outline: none;
+    width: 100%;
+}
+
+    .CheckListView > .optionsWrapper {
+        top: 24px;
+        display: block;
+        width: 100%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        background: #fff;
+        border: 1px solid #ddd;
+        overflow: hidden;
+        border-radius: 2px;
+    }
+
+        .CheckListView > .optionsWrapper ul {
+            list-style: none;
+            display: block;
+            padding: 0;
+            margin: 0;
+            overflow: auto;
+        }
+
+        .CheckListView > .optionsWrapper > .options {
+            position: relative;
+        }
+
+            .CheckListView > .optionsWrapper > .options li.option {
+                padding: 6px 6px;
+                position: relative;
+                border-bottom: 1px solid #f5f5f5;
+                padding-left: 35px;
+                cursor: pointer;
+            }
+
+                .CheckListView > .optionsWrapper > .options li.option:hover {
+                    background-color: #efefef;
+                    border-bottom: 1px solid #efefef;
+                }
+
+            .CheckListView > .optionsWrapper > .options > li.option:first-child {
+            }
+
+            .CheckListView > .optionsWrapper > .options li.option span {
+                position: absolute;
+                display: block;
+                width: 30px;
+                top: 0;
+                bottom: 0;
+                margin-left: -35px;
+            }
+
+                .CheckListView > .optionsWrapper > .options li.option span i {
+                    position: absolute;
+                    margin: auto;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 14px;
+                    height: 14px;
+                    font-size: 1.2em;
+                }
+
+            .CheckListView > .optionsWrapper > .options li.option label {
+                user-select: none;
+                -o-user-select: none;
+                -moz-user-select: none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                display: block;
+                cursor: pointer;
+                margin: 0;
+            }
+
+            .CheckListView > .optionsWrapper > .options li.option.disabled {
+                background-color: inherit;
+                pointer-events: none;
+            }
+
+                .CheckListView > .optionsWrapper > .options li.option.disabled * {
+                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+                    filter: alpha(opacity=50);
+                    -moz-opacity: 0.5;
+                    -khtml-opacity: 0.5;
+                    opacity: 0.5;
+                }
+
+            .CheckListView > .optionsWrapper > .options li.option.focused {
+                background-color: #efefef;
+                border-bottom: 1px solid #efefef;
+            }
+
+    .CheckListView .hidden {
+        display: none;
+    }
