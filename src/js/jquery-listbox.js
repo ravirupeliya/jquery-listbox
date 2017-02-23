@@ -7,13 +7,13 @@
 
 (function ($) {
     "use strict";
-    'namespace chklv';
-    $.fn.CheckListView = function (options) {
+    'namespace jqlv';
+    $.fn.jqListView = function (options) {
 
         var settings = $.extend({
             dataSource: [],
-            dataTextField: '',
-            dataValueField: '',
+            dataTextField: 'Text',
+            dataValueField: 'Value',
             template: '',
             checkedClassName: 'fa-check-square',
             unCheckedClassName: 'fa-square-o',
@@ -27,39 +27,39 @@
             DOWN: 2
         };
 
-        var ChklvItem = function (dataItem, liEle) {
+        var JqlvItem = function (dataItem, liEle) {
             this.dataItem = dataItem;
             this.liEle = liEle;
         };
 
-        ChklvItem.prototype.hideItem = function () {
+        JqlvItem.prototype.hideItem = function () {
             this.liEle.addClass('hidden');
             this.dataItem.hidden = true;
         };
 
-        ChklvItem.prototype.showItem = function () {
+        JqlvItem.prototype.showItem = function () {
             this.liEle.removeClass('hidden');
             this.dataItem.hidden = false;
         };
 
-        ChklvItem.prototype.enableItem = function () {
+        JqlvItem.prototype.enableItem = function () {
             this.liEle.removeClass('disabled');
             this.dataItem.disabled = false;
         };
 
-        ChklvItem.prototype.disableItem = function () {
+        JqlvItem.prototype.disableItem = function () {
             this.liEle.addClass('disabled');
             this.dataItem.disabled = true;
         };
 
-        ChklvItem.prototype.selectItem = function () {
+        JqlvItem.prototype.selectItem = function () {
             if (!this.dataItem || this.dataItem.disabled) return;
             this.liEle.addClass('selected');
             this.dataItem.selected = true;
             this.liEle.find('i').addClass(settings.checkedClassName);
         };
 
-        ChklvItem.prototype.deSelectItem = function () {
+        JqlvItem.prototype.deSelectItem = function () {
             if (!this.dataItem || this.dataItem.disabled) return;
             this.liEle.removeClass('selected');
             this.dataItem.selected = false;
@@ -69,14 +69,14 @@
         var returnValue = this.each(function () {
             var divEle = this;
 
-            if (this.chklv || !$(this).is('div')) return;
+            if (this.jqlv || !$(this).is('div')) return;
 
-            this.chklv = {
+            this.jqlv = {
                 E: $(divEle),
                 _createElems: function () {
                     var R = this;
 
-                    R.wrprDiv = $('<div class="CheckListView" tabindex="-1">');
+                    R.wrprDiv = $('<div class="jqListView" tabindex="-1">');
 
                     R.optsDiv = R._createWrapper();
 
@@ -89,7 +89,7 @@
                     R.wrprDiv.append(R.optsDiv);
 
                     R.E.append(R.wrprDiv);
-                    R._bindChklvEvents();
+                    R._bindJqlvEvents();
                 },
 
                 _createWrapper: function () {
@@ -120,7 +120,7 @@
                         if (!dataItem.selected) dataItem.selected = !1;
                         if (!dataItem.hidden) dataItem.hidden = !1;
                         dataItem.itemIndex = itemIndex++;
-                        arrLi.push(R._chklvDataBinding(dataItem, d));
+                        arrLi.push(R._jqlvDataBinding(dataItem, d));
                     });
 
                     //var t1 = performance.now();
@@ -129,15 +129,17 @@
                     return arrLi;
                 },
 
-                _chklvDataBinding: function (dataItem, d) {
+                _jqlvDataBinding: function (dataItem, d) {
                     var R = this;
+					if (!dataItem.hasOwnProperty(settings.dataTextField)) throw settings.dataTextField + ' is not defined';
+					if (!dataItem.hasOwnProperty(settings.dataValueField)) throw settings.dataValueField + ' is not defined';
                     var text = dataItem[settings.dataTextField];
                     if (settings.template != '') {
                         text = R._renderCustomTemplate(settings.template, dataItem);
                     }
-                    var li = $('<li class="option" chklvval="' + dataItem[settings.dataValueField] + '"><span><i class="fa ' + settings.unCheckedClassName + '"></i></span><label>' + text + '</label></li>');
+                    var li = $('<li class="option" jqlvval="' + dataItem[settings.dataValueField] + '"><span><i class="fa ' + settings.unCheckedClassName + '"></i></span><label>' + text + '</label></li>');
 
-                    li.data('ChklvItem', R._getChklvItem(dataItem, li));
+                    li.data('JqlvItem', R._getJqlvItem(dataItem, li));
 
                     if (dataItem.disabled || d)
                         li = li.addClass('disabled');
@@ -178,8 +180,8 @@
                     return rv;
                 },
 
-                _getChklvItem: function (data, li) {
-                    return new ChklvItem(data, li);
+                _getJqlvItem: function (data, li) {
+                    return new JqlvItem(data, li);
                 },
 
                 _navigate: function (dir) {
@@ -218,9 +220,9 @@
                         ulEle.scrollTop(eleSt);
                 },
 
-                _bindChklvEvents: function () {
+                _bindJqlvEvents: function () {
                     var R = this;
-                    R.wrprDiv.on('click.chklv', 'li', function (evt) {
+                    R.wrprDiv.on('click.jqlv', 'li', function (evt) {
                         var liEle = $(this);
                         var focusedEle = R.ul.find('li.option.focused:not(.hidden)');
                         focusedEle.removeClass('focused');
@@ -231,7 +233,7 @@
                         R._triggerClickEvent(liEle, evt);
                         if (changed) R._triggerChangeEvent(liEle, evt);
                     });
-                    R.wrprDiv.on('keydown.chklv', function (evt) {
+                    R.wrprDiv.on('keydown.jqlv', function (evt) {
                         switch (evt.which) {
                             case 38: // up
                                 R._navigate(NAVIGATION_DIR.UP);
@@ -268,18 +270,18 @@
 
                 _toggleItemSelection: function (ele) {
                     var R = this;
-                    var chklvItem = ele.data('ChklvItem');
-                    if (chklvItem.dataItem.disabled) return false;
+                    var jqlvItem = ele.data('JqlvItem');
+                    if (jqlvItem.dataItem.disabled) return false;
                     if (!settings.allowMultiSelection) {
-                        if (chklvItem.dataItem.selected) return false;
+                        if (jqlvItem.dataItem.selected) return false;
                         ele.parent().find('li.selected').each(function (i, e) {
-                            $(e).data('ChklvItem').deSelectItem();
+                            $(e).data('JqlvItem').deSelectItem();
                         });
                     }
-                    if (chklvItem.dataItem.selected)
-                        chklvItem.deSelectItem();
+                    if (jqlvItem.dataItem.selected)
+                        jqlvItem.deSelectItem();
                     else
-                        chklvItem.selectItem();
+                        jqlvItem.selectItem();
                     return true;
                 },
 
@@ -299,16 +301,16 @@
 
                 enableItemByIndex: function (index) {
                     var R = this;
-                    var chklvItem;
+                    var jqlvItem;
                     if (typeof (index) === "number") {
-                        chklvItem = R.E.find('.option:eq(' + index + ')').data('ChklvItem');
+                        jqlvItem = R.E.find('.option:eq(' + index + ')').data('JqlvItem');
                     }
                     else {
                         throw 'Invalid index value';
                     }
 
-                    if (chklvItem.dataItem.disabled) {
-                        chklvItem.enableItem();
+                    if (jqlvItem.dataItem.disabled) {
+                        jqlvItem.enableItem();
                     }
                 },
 
@@ -316,27 +318,27 @@
                     if (!settings.allowMultiSelection && !selected) return;
 
                     var R = this;
-                    var chklvItem;
+                    var jqlvItem;
                     if (typeof (index) === "number") {
-                        chklvItem = R.E.find('.option:eq(' + index + ')').data('ChklvItem');
+                        jqlvItem = R.E.find('.option:eq(' + index + ')').data('JqlvItem');
                     }
                     else {
                         throw 'Invalid index value';
                     }
-                    if (!chklvItem || !chklvItem.dataItem || chklvItem.dataItem.disabled) return;
+                    if (!jqlvItem || !jqlvItem.dataItem || jqlvItem.dataItem.disabled) return;
 
-                    if (chklvItem.dataItem.selected != selected) {
+                    if (jqlvItem.dataItem.selected != selected) {
                         if (!settings.allowMultiSelection) {
-                            if (chklvItem.liEle.hasClass('selected')) return false;
-                            chklvItem.liEle.parent().find('li.selected').each(function (i, e) {
-                                $(e).data('ChklvItem').deSelectItem();
+                            if (jqlvItem.liEle.hasClass('selected')) return false;
+                            jqlvItem.liEle.parent().find('li.selected').each(function (i, e) {
+                                $(e).data('JqlvItem').deSelectItem();
                             });
                         }
 
                         if (selected)
-                            chklvItem.selectItem();
+                            jqlvItem.selectItem();
                         else
-                            chklvItem.deSelectItem();
+                            jqlvItem.deSelectItem();
 
                         //R._triggerClickEvent(dataItem.liEle);
                         //R._triggerChangeEvent(dataItem.liEle);
@@ -347,52 +349,52 @@
                     if (!settings.allowMultiSelection && !selected) return;
 
                     var R = this;
-                    var chklvItem = R.E.find('.option[chklvval="' + value + '"]').data('ChklvItem') || 0;
-                    if (!chklvItem || !chklvItem.dataItem || chklvItem.dataItem.disabled) return;
+                    var jqlvItem = R.E.find('.option[jqlvval="' + value + '"]').data('JqlvItem') || 0;
+                    if (!jqlvItem || !jqlvItem.dataItem || jqlvItem.dataItem.disabled) return;
 
-                    if (chklvItem.dataItem.selected != selected) {
+                    if (jqlvItem.dataItem.selected != selected) {
                         if (!settings.allowMultiSelection) {
-                            if (chklvItem.liEle.hasClass('selected')) return false;
-                            chklvItem.liEle.parent().find('li.selected').each(function (i, e) {
-                                $(e).data('ChklvItem').deSelectItem();
+                            if (jqlvItem.liEle.hasClass('selected')) return false;
+                            jqlvItem.liEle.parent().find('li.selected').each(function (i, e) {
+                                $(e).data('JqlvItem').deSelectItem();
                             });
                         }
 
                         if (selected)
-                            chklvItem.selectItem();
+                            jqlvItem.selectItem();
                         else
-                            chklvItem.deSelectItem();
+                            jqlvItem.deSelectItem();
 
                         //R._triggerClickEvent(dataItem.liEle);
                         //R._triggerChangeEvent(dataItem.liEle);
                     }
                 },
 
-                getSelectedChklvItems: function () {
+                getSelectedJqlvItems: function () {
                     var R = this;
                     var selectedItems = [];
 
                     R.E.find('.option').each(function (i, e) {
-                        var chklvItem = $(e).data('ChklvItem');
-                        if (chklvItem.dataItem.selected) selectedItems.push(chklvItem);
+                        var jqlvItem = $(e).data('JqlvItem');
+                        if (jqlvItem.dataItem.selected) selectedItems.push(jqlvItem);
                     });
                     return selectedItems;
                 },
 
-                getAllChklvItems: function () {
+                getAllJqlvItems: function () {
                     var R = this;
                     var allItems = [];
 
                     R.E.find('.option').each(function (i, e) {
-                        var chklvItem = $(e).data('ChklvItem');
-                        allItems.push(chklvItem);
+                        var jqlvItem = $(e).data('JqlvItem');
+                        allItems.push(jqlvItem);
                     });
                     return allItems;
                 },
 
                 reload: function () {
                     var elm = this.unload();
-                    return $(elm).CheckListView(settings);
+                    return $(elm).jqListView(settings);
                 },
 
                 unload: function () {
@@ -401,7 +403,7 @@
                     R.E.show();
 
                     R.wrprDiv.remove();
-                    delete divEle.chklv;
+                    delete divEle.jqlv;
                     return divEle;
                 },
 
@@ -418,7 +420,7 @@
                 }
             };
 
-            divEle.chklv.init();
+            divEle.jqlv.init();
         });
 
         return returnValue.length == 1 ? returnValue[0] : returnValue;

@@ -12,12 +12,13 @@
     </style>
 </head>
 <body>
-    <div id="chkListDealerAccounts" style="width: 100%; display: inline-block; padding: 5px 0px; min-height: 400px;"></div>
+    <div id="jqListViewChecboxes" style="width: 100%; display: inline-block; padding: 5px 0px;"></div>
+	<div id="jqListViewRadioButtons" style="width: 100%; display: inline-block; padding: 5px 0px;"></div>
     <script type="text/javascript" src="../src/js/jQuery/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../src/js/jquery-listbox.js"></script>
     <script type="text/javascript">
-        function fnInitialize() {
-            var dataSource = [{
+		function fnBindMultiSelectListView() {
+			var dataSource = [{
                 Text: 'List item 1',
                 Value: 1
             },
@@ -57,11 +58,61 @@
                 Text: 'List item 10',
                 Value: 10
             }];
-            $('#chkListDealerAccounts').CheckListView({
-                dataSource: dataSource,
-                dataTextField: 'Text',
-                dataValueField: 'Value',
+            $('#jqListViewChecboxes').jqListView({
+                dataSource: dataSource
             });
+		}
+		function fnBindSingleSelectListView() {
+			var dataSource = [{
+                Text: 'List item 1',
+                Value: 1
+            },
+            {
+                Text: 'List item 2',
+                Value: 2
+            },
+            {
+                Text: 'List item 3',
+                Value: 3
+            },
+            {
+                Text: 'List item 4',
+                Value: 4
+            },
+            {
+                Text: 'List item 5',
+                Value: 5
+            },
+            {
+                Text: 'List item 6',
+                Value: 6
+            },
+            {
+                Text: 'List item 7',
+                Value: 7
+            },
+            {
+                Text: 'List item 8',
+                Value: 8
+            },
+            {
+                Text: 'List item 9',
+                Value: 9
+            },
+            {
+                Text: 'List item 10',
+                Value: 10
+            }];
+            $('#jqListViewRadioButtons').jqListView({
+                dataSource: dataSource,
+				checkedClassName: 'fa-stop-circle-o',
+				unCheckedClassName: 'fa-circle-o',
+				allowMultiSelection: !1
+            });
+		}
+        function fnInitialize() {
+			fnBindMultiSelectListView();
+			fnBindSingleSelectListView();
         }
         $(document).ready(function () {
             fnInitialize();
