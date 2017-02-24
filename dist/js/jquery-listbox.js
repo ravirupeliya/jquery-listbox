@@ -1,5 +1,5 @@
 ﻿/*
-* jquery-listbox - v0.0.1
+* jquery-listbox - v1.0.0
 * Copyright 2017, Ravi Rupeliya
 * Email : ravirupeliya@gmail.com
 * Free to use under the MIT license.
@@ -15,7 +15,7 @@
             dataTextField: 'Text',
             dataValueField: 'Value',
             template: '',
-            checkedClassName: 'fa-check-square',
+            checkedClassName: 'fa-check-square-o',
             unCheckedClassName: 'fa-square-o',
             maxHeight: '',
             height: '',
@@ -56,14 +56,16 @@
             if (!this.dataItem || this.dataItem.disabled) return;
             this.liEle.addClass('selected');
             this.dataItem.selected = true;
+			this.liEle.find('i').removeClass(settings.unCheckedClassName);
             this.liEle.find('i').addClass(settings.checkedClassName);
         };
 
         JqlvItem.prototype.deSelectItem = function () {
             if (!this.dataItem || this.dataItem.disabled) return;
             this.liEle.removeClass('selected');
-            this.dataItem.selected = false;
+            this.dataItem.selected = false;	
             this.liEle.find('i').removeClass(settings.checkedClassName);
+			this.liEle.find('i').addClass(settings.unCheckedClassName);
         };
 
         var returnValue = this.each(function () {
@@ -149,6 +151,7 @@
 
                     if (dataItem.selected) {
                         li.addClass('selected');
+						this.liEle.find('i').removeClass(settings.unCheckedClassName);
                         li.find('i').addClass(settings.checkedClassName);
                     }
 
